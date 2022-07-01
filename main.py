@@ -82,12 +82,15 @@ def MESSAGE():
 ██║ ╚███║╚██████╔╝██║ ╚██╗███████╗██║  ██║
 ╚═╝  ╚══╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝\n''')
 
+MESSAGE()
+
+
+print(
+    f'{Fore.RED}[{Fore.WHITE}i{Fore.RED}] {Fore.YELLOW}Если у вас нет файла с конфигом, введите название несуществующего файла.\n'
+)
+
 
 while True:
-
-    print(
-        f'{Fore.RED}[{Fore.WHITE}i{Fore.RED}] {Fore.YELLOW}Если у вас нет файла с конфигом, введите название несуществующего файла.\n'
-    )
 
     config = input(
         f'{Fore.YELLOW}Введите имя файла с конфигом {Fore.RED}[{Fore.WHITE}>{Fore.RED}] {Fore.WHITE}'
