@@ -65,6 +65,9 @@ config_example = '''
 '''
 
 from os import _exit, name, system
+
+system('title SERVER NUKER')
+
 from os.path import isfile
 
 clear = lambda: system('cls' if name == 'nt' else 'clear')
@@ -81,6 +84,7 @@ def MESSAGE():
 ██║╚████║██║   ██║██╔═██╗ ██╔══╝  ██╔══██╗
 ██║ ╚███║╚██████╔╝██║ ╚██╗███████╗██║  ██║
 ╚═╝  ╚══╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝\n''')
+
 
 MESSAGE()
 
@@ -188,11 +192,11 @@ from time import sleep
 
 from keyboard import is_pressed
 
-system('title SERVER NUKER')
-
 clear()
 
 MESSAGE()
+
+system('title SERVER NUKER [Starting...]')
 
 print(Fore.YELLOW + 'SERVER NUKER by ILoveRussia#6770\n\nЗапуск...')
 
@@ -378,11 +382,14 @@ def KEYBOARD_LISTENER():
 
 @client.event
 async def on_ready():
+    system('title SERVER NUKER [Logged in]')
+
     clear()
 
     Thread(target=lambda: KEYBOARD_LISTENER()).start()
 
     if len(client.guilds) == 0:
+        system('title SERVER NUKER [No servers]')
         print(Fore.RED + f'Бот не приглашён ни на один сервер!\n')
         print(
             Fore.RED +
@@ -408,6 +415,8 @@ async def on_ready():
 
     print(Fore.YELLOW +
           f'{client.command_prefix}{Fore.RED}nuke{Fore.YELLOW} - запуск')
+
+    system('title SERVER NUKER [Ready]')
 
 
 try:
