@@ -255,14 +255,7 @@ def MESSAGE():
 ╚═╝  ╚══╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝\n''')
 
 
-MESSAGE()
-
-print(
-    f'{Fore.RED}[{Fore.WHITE}i{Fore.RED}] {Fore.YELLOW}Если у вас нет файла с конфигом, введите название несуществующего файла.\n'
-    if lang == 1 else
-    f'{Fore.RED}[{Fore.WHITE}i{Fore.RED}] {Fore.YELLOW}If you dont have config file, enter incorrect file name.\n'
-)
-
+autosearch_errored = False
 if isfile('./nuker.py'):
     try:
         config = open('./nuker.py', 'r', encoding='utf-8')
@@ -360,13 +353,32 @@ if isfile('./nuker.py'):
                 1 else 'NUKER_OPTIONS|DELETE_TEMPLATES not found in config')
         is_found = True
     except Exception as e:
+        autosearch_errored = True
+        is_found = False
         print(
-            f'{Fore.RED}[{Fore.WHITE}x{Fore.RED}] {Fore.YELLOW}Ошибка чтения конфига: {e}{Fore.WHITE}'
+            f'{Fore.RED}[{Fore.WHITE}x{Fore.RED}] {Fore.YELLOW}Авто-обнаружение: Ошибка чтения конфига: {e}{Fore.WHITE}'
             if lang == 1 else
-            f'{Fore.RED}[{Fore.WHITE}x{Fore.RED}] {Fore.YELLOW}Error reading config: {e}{Fore.WHITE}'
+            f'{Fore.RED}[{Fore.WHITE}x{Fore.RED}] {Fore.YELLOW}Auto-Detect: Error reading config: {e}{Fore.WHITE}'
+        )
+        print(
+            f'{Fore.RED}[{Fore.WHITE}i{Fore.RED}] {Fore.YELLOW}Укажите другой файл или исправьте ошибку в ./nuker.py'
+            if lang == 1 else
+            f'{Fore.RED}[{Fore.WHITE}i{Fore.RED}] {Fore.YELLOW}Insert other file or fix error in ./nuker.py'
         )
 else:
     is_found = False
+
+
+if not is_found and autosearch_errored:
+    print('\n')
+MESSAGE()
+
+
+print(
+    f'{Fore.RED}[{Fore.WHITE}i{Fore.RED}] {Fore.YELLOW}Если у вас нет файла с конфигом, введите название несуществующего файла.\n'
+    if lang == 1 else
+    f'{Fore.RED}[{Fore.WHITE}i{Fore.RED}] {Fore.YELLOW}If you dont have config file, enter incorrect file name.\n'
+)
 
 if is_found == False:
     while True:
