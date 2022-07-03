@@ -1,3 +1,5 @@
+from sys import platform
+
 config_example_rus = '''
 {
     # Токен бота
@@ -178,103 +180,90 @@ config_example_en = '''
 }
 '''
 
+label = '''┏━┓ ┏┓  ┏┓
+┃ ┗┓┃┃  ┃┃
+┃┏┓┗┛┣┓┏┫┃┏┳━━┳━┓
+┃┃┗┓ ┃┃┃┃┗┛┃ ━┫┏┛
+┃┃ ┃ ┃┗┛┃┏┓┃ ━┫┃
+┗┛ ┗━┻━━┻┛┗┻━━┻┛
+'''
+
 from os.path import (split as psplit, sep)
 
 folder = psplit(__file__)[0] + sep
 
 from colorama import Fore, Back, Style
 
-# color
+# colors
+
+if platform == 'win32':
+    class exceptions:
+
+        class InvalidModeException(Exception):
+            pass
 
 
-class exceptions:
-
-    class InvalidModeException(Exception):
-        pass
+    def __fq_seq(color):
+        return '\033[38;5;%dm' % color
 
 
-def __hrun(start, width, padding=0):
-    return [None] * padding + list(range(start,
-                                         start + width)) + [None] * padding
+    def __bg_seq(color):
+        return '\033[48;5;%dm' % color
 
 
-def __vrun(start, width, height, padding=0):
-    return [
-        __hrun(s, width, padding)
-        for s in range(start, start + width * height, width)
-    ]
+    reset_seq = '\033[0m'
 
 
-def __fq_seq(color):
-    return '\033[38;5;%dm' % color
+
+    def ResetColor():
+        return Fore.RESET + Back.RESET + Style.RESET_ALL
 
 
-def __bg_seq(color):
-    return '\033[48;5;%dm' % color
+    def GetColor(color, mode='bg'):
+        if mode == 'bg':
+            color = __bg_seq(color)
+        elif mode == 'fg':
+            color = __fq_seq(color)
+        else:
+            raise exceptions.InvalidModeException(
+                'Invalid mode. Select one of this: bg - Background, fg - Foreground'
+            )
+
+        return color
 
 
-reset_seq = '\033[0m'
+    def RainbowColorize_L(text, mode='bg', colors=[], splittener=''):
 
+        letters = []
 
-def __color_bar(seq, color, trail):
-    if color is None:
-        return '%s    %s' % (reset_seq, trail)
-    else:
-        return '%s %03d%s' % (seq(color), color, trail)
+        if splittener != '':
+            for letter in text.split(splittener):
+                letters.append(letter)
+        else:
+            for letter in text:
+                letters.append(letter)
 
+        index = 0
+        lindex = 0
 
-def ResetColor():
-    return Fore.RESET + Back.RESET + Style.RESET_ALL
+        for x in letters:
 
+            if index >= len(colors):
+                index = 0
 
-def GetColor(color, mode='bg'):
-    if mode == 'bg':
-        color = __bg_seq(color)
-    elif mode == 'fg':
-        color = __fq_seq(color)
-    else:
-        raise exceptions.InvalidModeException(
-            'Invalid mode. Select one of this: bg - Background, fg - Foreground'
-        )
+            color_ = colors[index]
+            letters[lindex] = GetColor(color_, mode) + letters[lindex]
 
-    return color
+            index += 1
+            lindex += 1
 
+        letters[-1] = letters[-1] + ResetColor()
 
-def RainbowColorize_L(text, mode='bg', colors=[], splittener=''):
+        return splittener.join(letters)
 
-    letters = []
-
-    if splittener != '':
-        for letter in text.split(splittener):
-            letters.append(letter)
-    else:
-        for letter in text:
-            letters.append(letter)
-
-    index = 0
-    lindex = 0
-
-    for x in letters:
-
-        if index >= len(colors):
-            index = 0
-
-        color_ = colors[index]
-        letters[lindex] = GetColor(color_, mode) + letters[lindex]
-
-        index += 1
-        lindex += 1
-
-    letters[-1] = letters[-1] + ResetColor()
-
-    return splittener.join(letters)
-
-
-# color
+# colors (end)
 
 from os import _exit, name, system
-
-from sys import platform
 
 from os.path import isfile, split
 
@@ -347,22 +336,11 @@ colors_palitre = [[160, 161, 162, 163, 164, 165, 171, 177, 183, 189, 195],
 
 def MESSAGE():
     if platform == 'win32':
-        print(
-            RainbowColorize_L(
-                '''███╗  ██╗██╗   ██╗██╗  ██╗███████╗██████╗ 
-████╗ ██║██║   ██║██║ ██╔╝██╔════╝██╔══██╗
-██╔██╗██║██║   ██║█████═╝ █████╗  ██████╔╝
-██║╚████║██║   ██║██╔═██╗ ██╔══╝  ██╔══██╗
-██║ ╚███║╚██████╔╝██║ ╚██╗███████╗██║  ██║
-╚═╝  ╚══╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝\n''', 'fg', choice(colors_palitre), '\n'))
+        palitre = choice(colors_palitre)
+        print(RainbowColorize_L(label, 'fg', palitre, '\n'))
 
     else:
-        print(Fore.RED + '''███╗  ██╗██╗   ██╗██╗  ██╗███████╗██████╗ 
-████╗ ██║██║   ██║██║ ██╔╝██╔════╝██╔══██╗
-██╔██╗██║██║   ██║█████═╝ █████╗  ██████╔╝
-██║╚████║██║   ██║██╔═██╗ ██╔══╝  ██╔══██╗
-██║ ╚███║╚██████╔╝██║ ╚██╗███████╗██║  ██║
-╚═╝  ╚══╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝''')
+        print(Fore.RED + label)
 
 
 autosearch_errored = False
@@ -651,8 +629,8 @@ clear()
 
 MESSAGE()
 
-print(Fore.YELLOW + 'SERVER NUKER by ILoveRussia#6770\n\nЗапуск...' if lang ==
-      1 else Fore.YELLOW + 'SERVER NUKER by ILoveRussia#6770\n\nStarting...')
+print(Fore.YELLOW + 'Авторизация бота...' if lang ==
+      1 else Fore.YELLOW + 'Logging in...')
 
 import asyncio
 
@@ -1002,6 +980,6 @@ except:
         if lang == 1 else
         f'{Fore.RED}[{Fore.WHITE}x{Fore.RED}] {Fore.YELLOW}Invalid token: {data["BOT_TOKEN"]}{Fore.WHITE}'
     )
-    input(Fore.YELLOW +
-          f'\nENTER {Fore.RED}> Выйти ' + ResetColor() if lang == 1 else Fore.YELLOW +
+    input(Fore.YELLOW + f'\nENTER {Fore.RED}> Выйти ' +
+          ResetColor() if lang == 1 else Fore.YELLOW +
           f'\nENTER {Fore.RED}> Quit ' + ResetColor())
