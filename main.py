@@ -178,6 +178,100 @@ config_example_en = '''
 }
 '''
 
+from os.path import (split as psplit, sep)
+
+folder = psplit(__file__)[0] + sep
+
+from colorama import Fore, Back, Style
+
+# color
+
+
+class exceptions:
+
+    class InvalidModeException(Exception):
+        pass
+
+
+def __hrun(start, width, padding=0):
+    return [None] * padding + list(range(start,
+                                         start + width)) + [None] * padding
+
+
+def __vrun(start, width, height, padding=0):
+    return [
+        __hrun(s, width, padding)
+        for s in range(start, start + width * height, width)
+    ]
+
+
+def __fq_seq(color):
+    return '\033[38;5;%dm' % color
+
+
+def __bg_seq(color):
+    return '\033[48;5;%dm' % color
+
+
+reset_seq = '\033[0m'
+
+
+def __color_bar(seq, color, trail):
+    if color is None:
+        return '%s    %s' % (reset_seq, trail)
+    else:
+        return '%s %03d%s' % (seq(color), color, trail)
+
+
+def ResetColor():
+    return Fore.RESET + Back.RESET + Style.RESET_ALL
+
+
+def GetColor(color, mode='bg'):
+    if mode == 'bg':
+        color = __bg_seq(color)
+    elif mode == 'fg':
+        color = __fq_seq(color)
+    else:
+        raise exceptions.InvalidModeException(
+            'Invalid mode. Select one of this: bg - Background, fg - Foreground'
+        )
+
+    return color
+
+
+def RainbowColorize_L(text, mode='bg', colors=[], splittener=''):
+
+    letters = []
+
+    if splittener != '':
+        for letter in text.split(splittener):
+            letters.append(letter)
+    else:
+        for letter in text:
+            letters.append(letter)
+
+    index = 0
+    lindex = 0
+
+    for x in letters:
+
+        if index >= len(colors):
+            index = 0
+
+        color_ = colors[index]
+        letters[lindex] = GetColor(color_, mode) + letters[lindex]
+
+        index += 1
+        lindex += 1
+
+    letters[-1] = letters[-1] + ResetColor()
+
+    return splittener.join(letters)
+
+
+# color
+
 from os import _exit, name, system
 
 from sys import platform
@@ -193,8 +287,6 @@ from math import ceil
 
 clear = lambda: system('cls' if name == 'nt' else 'clear')
 clear()
-
-from colorama import Fore
 
 from time import sleep
 
@@ -245,20 +337,39 @@ else:
 
 clear()
 
+from random import choice
+
+colors_palitre = [[160, 161, 162, 163, 164, 165, 171, 177, 183, 189, 195],
+                  [93, 99, 105, 111, 117, 123, 122, 121, 120, 119, 118],
+                  [21, 27, 33, 39, 45, 51, 50, 49, 48, 47, 46],
+                  [46, 47, 48, 49, 50, 51, 45, 39, 33, 27, 21]]
+
 
 def MESSAGE():
-    print(Fore.RED + '''███╗  ██╗██╗   ██╗██╗  ██╗███████╗██████╗ 
+    if platform == 'win32':
+        print(
+            RainbowColorize_L(
+                '''███╗  ██╗██╗   ██╗██╗  ██╗███████╗██████╗ 
 ████╗ ██║██║   ██║██║ ██╔╝██╔════╝██╔══██╗
 ██╔██╗██║██║   ██║█████═╝ █████╗  ██████╔╝
 ██║╚████║██║   ██║██╔═██╗ ██╔══╝  ██╔══██╗
 ██║ ╚███║╚██████╔╝██║ ╚██╗███████╗██║  ██║
-╚═╝  ╚══╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝\n''')
+╚═╝  ╚══╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝\n''', 'fg', choice(colors_palitre), '\n'))
+
+    else:
+        print(Fore.RED + '''███╗  ██╗██╗   ██╗██╗  ██╗███████╗██████╗ 
+████╗ ██║██║   ██║██║ ██╔╝██╔════╝██╔══██╗
+██╔██╗██║██║   ██║█████═╝ █████╗  ██████╔╝
+██║╚████║██║   ██║██╔═██╗ ██╔══╝  ██╔══██╗
+██║ ╚███║╚██████╔╝██║ ╚██╗███████╗██║  ██║
+╚═╝  ╚══╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝''')
 
 
 autosearch_errored = False
-if isfile('./nuker.py'):
+
+if isfile(folder + 'nuker.py'):
     try:
-        config = open('./nuker.py', 'r', encoding='utf-8')
+        config = open(folder + 'nuker.py', 'r', encoding='utf-8')
         data = eval(config.read())
         config.close()
 
@@ -368,11 +479,9 @@ if isfile('./nuker.py'):
 else:
     is_found = False
 
-
 if not is_found and autosearch_errored:
     print('\n')
 MESSAGE()
-
 
 print(
     f'{Fore.RED}[{Fore.WHITE}i{Fore.RED}] {Fore.YELLOW}Если у вас нет файла с конфигом, введите название несуществующего файла.\n'
@@ -418,7 +527,7 @@ if is_found == False:
                         )
                         break
                     elif ask == 'y':
-                        file = open('nuker.py', 'w', encoding='utf-8')
+                        file = open(folder + 'nuker.py', 'w', encoding='utf-8')
                         file.write(config_example_rus if lang ==
                                    1 else config_example_en)
                         file.close()
@@ -818,6 +927,8 @@ async def on_ready():
 
     clear()
 
+    MESSAGE()
+
     Thread(target=lambda: KEYBOARD_LISTENER_F12()).start()
 
     Thread(target=lambda: KEYBOARD_LISTENER_CTRL_U()).start()
@@ -846,6 +957,7 @@ async def on_ready():
     print(f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] {Fore.YELLOW}F12: Остановить'
           if lang ==
           1 else f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] {Fore.YELLOW}F12: Stop')
+
     print(
         f'{Fore.RED}[{Fore.WHITE}+{Fore.RED}] {Fore.YELLOW}CTRL+U: Скопировать пригласительную ссылку\n'
         if lang == 1 else
@@ -886,10 +998,10 @@ try:
 except:
     clear()
     print(
-        f'{Fore.RED}[{Fore.WHITE}x{Fore.RED}] {Fore.YELLOW}Неверный токен{Fore.WHITE}'
+        f'{Fore.RED}[{Fore.WHITE}x{Fore.RED}] {Fore.YELLOW}Неверный токен: {data["BOT_TOKEN"]}{Fore.WHITE}'
         if lang == 1 else
-        f'{Fore.RED}[{Fore.WHITE}x{Fore.RED}] {Fore.YELLOW}Invalid token{Fore.WHITE}'
+        f'{Fore.RED}[{Fore.WHITE}x{Fore.RED}] {Fore.YELLOW}Invalid token: {data["BOT_TOKEN"]}{Fore.WHITE}'
     )
     input(Fore.YELLOW +
-          f'\nENTER {Fore.RED}> Выйти ' if lang == 1 else Fore.YELLOW +
-          f'\nENTER {Fore.RED}> Quit ')
+          f'\nENTER {Fore.RED}> Выйти ' + ResetColor() if lang == 1 else Fore.YELLOW +
+          f'\nENTER {Fore.RED}> Quit ' + ResetColor())
